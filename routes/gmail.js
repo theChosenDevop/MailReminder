@@ -2,15 +2,16 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
+const axios = require('axios');
 const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 
 const router = express.Router();
-
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
-const INTEGRATION_FILE = path.join(process.cwd(), 'integration.json');
+
+const TELEX_WEBHOOK_URL = 'https://ping.telex.im/v1/webhooks/01952f59-407f-70a3-89d2-ce6e6809dbfd';
 
 // Load saved credentials
 async function loadSavedCredentialsIfExist() {
@@ -23,26 +24,11 @@ async function loadSavedCredentialsIfExist() {
   }
 }
 
-// Save credentials after authorization
-async function saveCredentials(client) {
-  const content = await fs.readFile(CREDENTIALS_PATH);
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
-  const payload = JSON.stringify({
-    type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  });
-  await fs.writeFile(TOKEN_PATH, payload);
-}
-
 // Authenticate user
 async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) return client;
   client = await authenticate({ scopes: SCOPES, keyfilePath: CREDENTIALS_PATH });
-  if (client.credentials) await saveCredentials(client);
   return client;
 }
 
@@ -50,39 +36,44 @@ async function authorize() {
 async function getUnrepliedEmails(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
 
-  // Search for unread, unreplied emails (excluding chats and sent emails)
   const res = await gmail.users.messages.list({
     userId: 'me',
     q: 'in:inbox -in:chats -from:me -has:userlabels older_than:1d is:unread',
   });
 
-  const messages = res.data.messages;
-  if (!messages || messages.length === 0) {
-    console.log("No unreplied emails found.");
-    return [];
-  }
-
-  console.log(`Found ${messages.length} unreplied emails.`);
-  return messages;
+  return res.data.messages || [];
 }
 
 // Get email subject
 async function getEmailSubject(auth, messageId) {
   const gmail = google.gmail({ version: "v1", auth });
-
-  const res = await gmail.users.messages.get({
-    userId: "me",
-    id: messageId,
-  });
-
+  const res = await gmail.users.messages.get({ userId: "me", id: messageId });
   const headers = res.data.payload.headers;
   const subjectHeader = headers.find(header => header.name === "Subject");
-
   return subjectHeader ? subjectHeader.value : "(No Subject)";
 }
 
-// Route to fetch unreplied emails and save to integration.json
-router.get('/gmail/unreplied', async (req, res) => {
+// ✅ `integration.json` Telex Schema
+router.get('/integration.json', async (req, res) => {
+  const base_url ="https://mailreminder.onrender.com";
+  res.json({
+    "data": {
+        "descriptions": {
+            "app_name": "Gmail Unreplied Email Notifier",
+            "app_description": "Notifies about unreplied Gmail emails",
+            "app_url": base_url,
+            "app_logo": "https://i.imgur.com/lZqvffp.png", 
+            "background_color": "#fff"
+        },
+        "integration_type": "interval",
+        "settings": [],
+        "tick_url": `${base_url}/api/tick` 
+    }
+});
+});
+
+// ✅ `tick` Endpoint (Triggered by Telex)
+router.post('/tick', async (req, res) => {
   try {
     const auth = await authorize();
     const emails = await getUnrepliedEmails(auth);
@@ -94,23 +85,25 @@ router.get('/gmail/unreplied', async (req, res) => {
       })
     );
 
-    // Save output to integration.json
-    await fs.writeFile(INTEGRATION_FILE, JSON.stringify({ count: emailSubjects.length, emails: emailSubjects }, null, 2));
+    // Save to integration.json
+    await fs.writeFile('integration.json', JSON.stringify(emailSubjects, null, 2));
 
-    res.json({ count: emailSubjects.length, emails: emailSubjects });
+    // Send webhook notification
+    if (emailSubjects.length > 0) {
+      await axios.post(TELEX_WEBHOOK_URL, {
+        message: `You have ${emailSubjects.length} unreplied emails.`,
+        emails: emailSubjects,
+        username: "Gmail Notifier",
+        event_name: "Unreplied Emails",
+        status: "warning"
+      });
+    }
+
+    res.status(202).json({ status: "accepted", count: emailSubjects.length });
+
   } catch (error) {
+    console.error("Error fetching emails:", error);
     res.status(500).json({ error: error.message });
-  }
-});
-
-// Route to serve integration.json file
-router.get('/integration.json', async (req, res) => {
-  try {
-    const data = await fs.readFile(INTEGRATION_FILE, 'utf8');
-    res.setHeader('Content-Type', 'application/json');
-    res.send(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Error reading integration.json' });
   }
 });
 

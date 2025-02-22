@@ -1,7 +1,7 @@
-# Gmail Unreplied Email Notifier
+# Mail Reminder
 
 ## 📌 Overview
-The **Gmail Unreplied Email Notifier** is a Node.js application that connects to the Gmail API and retrieves unreplied emails from the user's inbox. It provides API endpoints that return the count and subject lines of these emails, allowing users to stay on top of pending messages. Additionally, it stores the email data in `integration.json` for persistent access.
+The **Mail Reminder** is a Node.js application that connects to the Gmail API and retrieves unreplied emails from the user's inbox. It provides API endpoints that return the count and subject lines of these emails, allowing users to stay on top of pending messages. Additionally, it stores the email data in `integration.json` for persistent access.
 
 ## 🚀 Features
 - **OAuth 2.0 Authentication** with Google API
@@ -17,21 +17,21 @@ The **Gmail Unreplied Email Notifier** is a Node.js application that connects to
 - **Google Gmail API** (Email retrieval)
 - **Supertest & Jest** (Testing framework)
 
-## 📂 Project Structure
+## 📚 Project Structure
 ```
 /node_gmail
-│── index.js              # Main entry point
-│── package.json         # Dependencies & scripts
-│── server.test.js       # Test file (Jest & Supertest)
-│── token.json          # OAuth token file
-│── credentials.json    # Google API credentials
-│── integration.json    # Stores retrieved email data
-│── node_modules/       # Node dependencies
-│── routes/
-       │── gmail.js    # Gmail API routes
+ﬂ─ index.js              # Main entry point
+ﬂ─ package.json         # Dependencies & scripts
+ﬂ─ server.test.js       # Test file (Jest & Supertest)
+ﬂ─ token.json          # OAuth token file
+ﬂ─ credentials.json    # Google API credentials
+ﬂ─ integration.json    # Stores retrieved email data
+ﬂ─ node_modules/       # Node dependencies
+ﬂ─ routes/
+       ﬂ─ gmail.js    # Gmail API routes
 ```
 
-## 📦 Installation
+## 📎 Installation
 ### 1️⃣ Clone the repository
 ```sh
 git clone https://github.com/theChosenDevop/MailReminder.git
@@ -87,7 +87,7 @@ Returns the stored email data from `integration.json`.
 }
 ```
 
-## 🧪 Running Tests
+## 🧖🏽‍♂️ Running Tests
 To run unit tests:
 ```sh
 npm test
@@ -109,7 +109,7 @@ npm test
 - Implement **frontend UI** for notifications
 - Enhance **error handling** and **logging**
 
-## 📄 License
+## 📝 License
 MIT License © 2025 Oluwatobi Adesanya
 
 ---
