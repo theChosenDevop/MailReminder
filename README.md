@@ -1,13 +1,14 @@
 # Gmail Unreplied Email Notifier
 
 ## 📌 Overview
-The **Gmail Unreplied Email Notifier** is a Node.js application that connects to the Gmail API and retrieves unreplied emails from the user's inbox. It provides an API endpoint that returns the count and subject lines of these emails, allowing users to stay on top of pending messages.
+The **Gmail Unreplied Email Notifier** is a Node.js application that connects to the Gmail API and retrieves unreplied emails from the user's inbox. It provides API endpoints that return the count and subject lines of these emails, allowing users to stay on top of pending messages. Additionally, it stores the email data in `integration.json` for persistent access.
 
 ## 🚀 Features
 - **OAuth 2.0 Authentication** with Google API
 - **Fetches Unreplied Emails** from the inbox
 - **Returns Email Count & Subjects**
-- **Express.js API Endpoint** for easy integration
+- **Express.js API Endpoints** for easy integration
+- **Saves Data to `integration.json`** for persistence
 - **Error Handling** for API failures
 
 ## 🛠️ Tech Stack
@@ -24,6 +25,7 @@ The **Gmail Unreplied Email Notifier** is a Node.js application that connects to
 │── server.test.js       # Test file (Jest & Supertest)
 │── token.json          # OAuth token file
 │── credentials.json    # Google API credentials
+│── integration.json    # Stores retrieved email data
 │── node_modules/       # Node dependencies
 │── routes/
        │── gmail.js    # Gmail API routes
@@ -32,8 +34,8 @@ The **Gmail Unreplied Email Notifier** is a Node.js application that connects to
 ## 📦 Installation
 ### 1️⃣ Clone the repository
 ```sh
-git clone https://github.com/thechosenDevop/node_gmail.git
-cd node_gmail
+git clone https://github.com/theChosenDevop/MailReminder.git
+cd MailReminder
 ```
 
 ### 2️⃣ Install dependencies
@@ -56,6 +58,23 @@ The server will run on `http://localhost:3000`
 ## 🔥 Usage
 ### 📌 GET Unreplied Emails
 **Endpoint:** `GET /api/gmail/unreplied`
+
+**Response:**
+```json
+{
+  "count": 2,
+  "emails": [
+    { "id": "123", "subject": "Frontend Developer Opportunity" },
+    { "id": "456", "subject": "Meeting Confirmation" }
+  ]
+}
+```
+
+### 📌 GET Integration Data
+**Endpoint:** `GET /integration.json`
+
+**Description:**
+Returns the stored email data from `integration.json`.
 
 **Response:**
 ```json
@@ -96,3 +115,4 @@ MIT License © 2025 Oluwatobi Adesanya
 ---
 ### 👨‍💻 Author
 [Oluwatobi Adesanya](https://github.com/thechosenDevop)
+
