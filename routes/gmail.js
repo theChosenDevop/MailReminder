@@ -57,51 +57,51 @@ async function getEmailSubject(auth, messageId) {
 router.get('/integration.json', async (req, res) => {
   const base_url ="https://mailreminder.onrender.com";
   res.json({
-    data: {
-      date: {
-        created_at: "2025-02-22",
-        updated_at: "2025-02-22",
+    "data": {
+      "date": {
+        "created_at": "2025-02-22",
+        "updated_at": "2025-02-22"
       },
-      descriptions: {
-        app_name: "mailReminder",
-        app_description: "Notifies users about unreplied emails in their inbox",
-        app_logo: "",
-        app_url: "https://mailreminder.onrender.com",
-        background_color: "#fff",
+      "descriptions": {
+        "app_name": "mailReminder",
+        "app_description": "Notifies users about unreplied emails in their inbox",
+        "app_logo": "\"\"",
+        "app_url": "https://mailreminder.onrender.com",
+        "background_color": "#fff"
       },
-      is_active: true,
-      integration_type: "interval",
-      integration_category: "Communication & Collaboration",
-      key_features: [
+      "is_active": true,
+      "integration_type": "interval",
+      "integration_category": "Communication & Collaboration",
+      "key_features": [
         "Email Check Interval",
         "Notification Channel ID",
-        "Include Email Subjects",
+        "Include Email Subjects"
       ],
-      author: "theChosenDevop",
-      settings: [
+      "author": "theChosenDevop",
+      "settings": [
         {
-          label: "Email Check Interval",
-          type: "number",
-          required: true,
-          default: "5",
+          "label": "Email Check Interval",
+          "type": "number",
+          "required": true,
+          "default": "5"
         },
         {
-          label: "Notification Channel ID",
-          type: "text",
-          required: true,
-          default: "true",
+          "label": "Notification Channel ID",
+          "type": "text",
+          "required": true,
+          "default": "true"
         },
         {
-          label: "Include Email Subjects",
-          type: "checkbox",
-          required: true,
-          default: "false",
-        },
+          "label": "Include Email Subjects",
+          "type": "checkbox",
+          "required": true,
+          "default": "false"
+        }
       ],
-      target_url: "",
-      tick_url: `${base_url}/api/tick`
-    },
-});
+      "target_url": "\"\"",
+      "tick_url": "https://mailreminder.onrender.com/api/tick"
+    }
+  });
 });
 
 // ✅ `tick` Endpoint (Triggered by Telex)
