@@ -65,7 +65,7 @@ router.get('/integration.json', async (req, res) => {
       "descriptions": {
         "app_name": "mailReminder",
         "app_description": "Notifies users about unreplied emails in their inbox",
-        "app_logo": "../mail2.jpg",
+        "app_logo": "https://pngimg.com/uploads/email/email_PNG11.png",
         "app_url": "https://mailreminder.onrender.com",
         "background_color": "#fff"
       },
