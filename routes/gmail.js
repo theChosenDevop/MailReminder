@@ -57,18 +57,50 @@ async function getEmailSubject(auth, messageId) {
 router.get('/integration.json', async (req, res) => {
   const base_url ="https://mailreminder.onrender.com";
   res.json({
-    "data": {
-        "descriptions": {
-            "app_name": "Gmail Unreplied Email Notifier",
-            "app_description": "Notifies about unreplied Gmail emails",
-            "app_url": base_url,
-            "app_logo": "https://i.imgur.com/lZqvffp.png", 
-            "background_color": "#fff"
+    data: {
+      date: {
+        created_at: "2025-02-22",
+        updated_at: "2025-02-22",
+      },
+      descriptions: {
+        app_name: "mailReminder",
+        app_description: "Notifies users about unreplied emails in their inbox",
+        app_logo: "",
+        app_url: "https://mailreminder.onrender.com",
+        background_color: "#fff",
+      },
+      is_active: true,
+      integration_type: "interval",
+      integration_category: "Communication & Collaboration",
+      key_features: [
+        "Email Check Interval",
+        "Notification Channel ID",
+        "Include Email Subjects",
+      ],
+      author: "theChosenDevop",
+      settings: [
+        {
+          label: "Email Check Interval",
+          type: "number",
+          required: true,
+          default: "5",
         },
-        "integration_type": "interval",
-        "settings": [],
-        "tick_url": `${base_url}/api/tick` 
-    }
+        {
+          label: "Notification Channel ID",
+          type: "text",
+          required: true,
+          default: "true",
+        },
+        {
+          label: "Include Email Subjects",
+          type: "checkbox",
+          required: true,
+          default: "false",
+        },
+      ],
+      target_url: "",
+      tick_url: `${base_url}/api/tick`
+    },
 });
 });
 
